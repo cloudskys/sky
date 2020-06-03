@@ -23,7 +23,6 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * @author lengleng
  * @date 2018/11/5
  * <p>
  * 开启pigx 动态路由

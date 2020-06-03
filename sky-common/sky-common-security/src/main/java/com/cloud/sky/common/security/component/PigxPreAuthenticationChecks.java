@@ -27,7 +27,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsChecker;
 
 /**
- * @author lengleng
+ * @author
  * @date 2019-01-02
  */
 @Slf4j

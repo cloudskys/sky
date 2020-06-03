@@ -25,7 +25,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 
 /**
- * @author lengleng
  * @date 2018年06月21日
  * 认证授权中心
  */

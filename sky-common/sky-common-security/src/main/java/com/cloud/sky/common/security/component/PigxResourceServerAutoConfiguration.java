@@ -29,7 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 
 /**
- * @author lengleng
+ * @author
  * @date 2018/11/10
  */
 @ComponentScan("com.cloud.sky.common.security")

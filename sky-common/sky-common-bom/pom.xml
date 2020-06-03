@@ -13,7 +13,7 @@
 	<artifactId>sky-common-bom</artifactId>
 	<packaging>pom</packaging>
 	<version>${sky.version}</version>
-	<description>pigx 公共版本控制</description>
+	<description>sky 公共版本控制</description>
 
 	<properties>
 		<sky.version>3.2</sky.version>

@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.pig4cloud.pigx.common.datasource.DataSourceAutoConfiguration
+  com.cloud.sky.common.datasource.DataSourceAutoConfiguration
