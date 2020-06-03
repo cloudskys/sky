@@ -15,7 +15,7 @@
  * Author: lengleng (wangiegie@gmail.com)
  */
 
-package com.pig4cloud.common.minio;
+package com.cloud.common.minio;
 
 import com.pig4cloud.common.minio.service.MinioTemplate;
 import lombok.AllArgsConstructor;
@@ -30,9 +30,9 @@ import org.springframework.context.annotation.Bean;
  * @author lengleng
  */
 @AllArgsConstructor
-@EnableConfigurationProperties({MinioProperties.class})
+@EnableConfigurationProperties({com.cloud.common.minio.MinioProperties.class})
 public class MinioAutoConfiguration {
-	private final MinioProperties properties;
+	private final com.cloud.common.minio.MinioProperties properties;
 
 	@Bean
 	@ConditionalOnMissingBean(MinioTemplate.class)

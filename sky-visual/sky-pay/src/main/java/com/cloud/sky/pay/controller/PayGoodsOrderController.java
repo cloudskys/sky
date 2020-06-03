@@ -9,7 +9,7 @@
  * Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
+ * Neither the name of the cloud.com developer nor the names of its
  * contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
  * Author: lengleng (wangiegie@gmail.com)
@@ -72,7 +72,7 @@ public class PayGoodsOrderController {
 		if (ua.contains(PayConstants.MICRO_MESSENGER)) {
 			String appId = WxPayApiConfigKit.getWxPayApiConfig().getAppId();
 			modelAndView.setViewName("redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + appId +
-					"&redirect_uri=http%3a%2f%2fadmin.pig4cloud.com%2fpay%2fgoods%2fwx%3famount%3d" + goods.getAmount() +
+					"&redirect_uri=http%3a%2f%2fadmin.cloud.com%2fpay%2fgoods%2fwx%3famount%3d" + goods.getAmount() +
 					"&response_type=code&scope=snsapi_base&state=" + appId);
 			return modelAndView;
 		}

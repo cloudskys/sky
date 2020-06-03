@@ -15,7 +15,7 @@
  * Author: lengleng (wangiegie@gmail.com)
  */
 
-package com.pig4cloud.common.minio;
+package com.cloud.common.minio;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

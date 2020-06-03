@@ -15,7 +15,7 @@
  * Author: lengleng (wangiegie@gmail.com)
  */
 
-package com.pig4cloud.common.minio.http;
+package com.cloud.common.minio.http;
 
 import com.pig4cloud.common.minio.service.MinioTemplate;
 import com.pig4cloud.common.minio.vo.MinioItem;
