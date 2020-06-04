@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heyou.dao.airOrder.InsSubOrderInfoDAO">
+
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, insurance_id AS insuranceId, ins_product_id AS insProductId, product_id AS productId,
+        name, cert_type AS certType, cert_code AS certCode, mobile, begin_date AS beginDate,
+         end_date AS endDate, sex, birthday, insurance_type AS insuranceType, flight_no AS flightNo,
+         start_address AS startAddress, end_address AS endAddress, pnr, ticket_no AS ticketNo,
+         insurance_no AS insuranceNo, insurance_status AS insuranceStatus,
+         insure_failed_msg AS insureFailedMsg, refund_insure_status AS refundInsureStatus,
+         refund_insure_failed_msg AS refundInsureFailedMsg,special_note AS specialNote
+    </sql>
+
+    <update id="updateOrderStateByReleatedId">
+		UPDATE ins_sub_order_info t SET t.order_state = #{orderState},t.update_time = now()
+		 WHERE t.ins_type_releated_id =  #{releatedId}
+	</update>
+
+</mapper>

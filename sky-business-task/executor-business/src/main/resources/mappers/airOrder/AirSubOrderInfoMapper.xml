@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heyou.dao.airOrder.AirSubOrderInfoDAO">
+
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, air_ticket_releated_id AS airTicketReleatedId, third_sub_order_no AS thirdSubOrderNo, name, sex, birthday, identity_type AS identityType, identity_no AS identityNo, crew_type AS crewType, phone_num AS phoneNum, price, airport_tax AS airportTax, fuel_tax AS fuelTax, commision_point AS commisionPoint, commision_money AS commisionMoney, pay_fee AS payFee, order_state AS orderState, create_user AS createUser, update_user AS updateUser, create_time AS createTime, update_time AS updateTime, order_price AS orderPrice
+    </sql>
+
+    <update id="updateOrderState">
+		UPDATE air_sub_order_info t SET t.order_state = #{orderState},t.update_time = now()
+		 WHERE t.third_sub_order_no =  #{orderNo}
+	</update>
+
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/rabbit
+        http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+
+    <bean id="propertyConfigurer" class="com.heyou.util.PropertyConfigurerEx">
+        <property name="fileEncoding" value="utf-8" />
+        <property name="locations">
+            <list>
+                <value>classpath*:xxl-job-executor.properties</value>
+                <value>classpath*:rabbitmq_config.properties</value>
+                <value>classpath*:jielv_config.properties</value>
+                <value>classpath*:jdbc.properties</value>
+                <value>classpath*:application.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 服务器配置 -->
+    <rabbit:connection-factory id="connectionFactoryOrder" host="${mq.host}" port="${mq.port}" username="${mq.username}"
+                               password="${mq.password}" virtual-host="${mq.virtual.host.order}"/>
+
+    <!-- mq的管理 包括队列，交换器 声明等 -->
+    <rabbit:admin connection-factory="connectionFactoryOrder" id="adminOrder"/>
+
+    <!-- 消息对象json转换类 -->
+    <bean id="jsonMessageConverterOrder" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter" />
+
+    <!-- 定义模板 -->
+    <rabbit:template id="rabbitInsTemplate" connection-factory="connectionFactoryOrder" exchange="ins.topic.exchange" message-converter="jsonMessageConverterOrder"/>
+
+    <rabbit:queue name="ins.type.releated.log.queue" durable="true" auto-delete="false" declared-by="adminOrder"/>
+
+    <!-- 定义交换器，type = topic -->
+    <rabbit:topic-exchange name="ins.topic.exchange" durable="true" auto-delete="false" declared-by="adminOrder">
+        <!-- 绑定队列 -->
+        <rabbit:bindings>
+            <rabbit:binding pattern="ins.type.releated.log.key" queue="ins.type.releated.log.queue" />
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+
+</beans>

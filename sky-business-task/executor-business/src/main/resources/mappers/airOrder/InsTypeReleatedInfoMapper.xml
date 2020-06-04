@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heyou.dao.airOrder.InsTypeReleatedInfoDAO">
+
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, insurance_id AS insuranceId, insurance_type_order_no AS insuranceTypeOrderNo, third_order_no AS thirdOrderNo, order_price AS orderPrice, insurance_type AS insuranceType
+        ,ins_person AS insPerson,phone,birthday,cert_type AS certType,cert_code AS certCode, order_url AS order_url
+        ,pay_type AS payType,pay_time AS payTime,pay_trade_no AS payTradeNo
+    </sql>
+
+    <select id="getThirdOrderNo" resultType="java.lang.Integer">
+		SELECT itri.id FROM ins_order_info ioi LEFT JOIN ins_type_releated_info itri
+		ON ioi.`id` = itri.`insurance_id`
+		WHERE ioi.`order_no` = #{orderNo}
+	</select>
+
+</mapper>

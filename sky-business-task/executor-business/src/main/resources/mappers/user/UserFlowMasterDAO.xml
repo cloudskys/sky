@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heyou.dao.flowmaster.UserFlowMasterDAO">
+	<update id="updateMemberRecommend">
+		update member_recommend set test_field = concat(IFNULL(test_field, ""), #{testField}), test_field2 = #{testField2} where user_id = #{userId} and superior_id = #{superiorId}
+	</update>
+
+	<select id="getAllBrokerUser" resultType="java.util.Map">
+		SELECT
+			b.userId
+		FROM
+			( SELECT user_id AS userId FROM shops WHERE state = 3
+			UNION ALL
+			SELECT chain_uid AS userId FROM chain_user
+			UNION ALL
+			SELECT v.user_id from v_member_user v where v.valid = '1'
+			) AS b
+		WHERE b.userId != 68370
+		GROUP BY
+			b.userId
+	</select>
+    <select id="getMemberRecommends" resultType="java.util.Map">
+		select user_id as userId, superior_id as superiorId from member_recommend limit #{pageNo}, #{pageSize}
+	</select>
+	<select id="findReferrer" resultType="java.util.Map">
+		select superior_id as referrer from member_recommend where user_id = #{userId}
+	</select>
+	<select id="getFlowMasterByUserId" resultType="com.heyou.entity.flowmaster.UserFlowMaster">
+		SELECT flow_master_id as flowMasterId from flow_master where flow_id=#{userId}
+	</select>
+
+	<select id="selectFlowByMaster" resultType="integer">
+		SELECT flow_id as flowId from flow_master where flow_master_id=#{flowMasterId} and state=1
+		GROUP BY flow_id
+	</select>
+	<select id="isBrokerRoleByUserId" resultType="java.lang.Integer">
+		SELECT
+			count( c.userId )
+		FROM
+			(
+			SELECT
+				b.userId
+			FROM
+				( SELECT user_id AS userId FROM shops WHERE state = 3 AND user_id = #{userId}
+				UNION ALL
+				SELECT chain_uid AS userId FROM chain_user WHERE chain_uid != 68370 AND chain_uid = #{userId}
+				UNION ALL
+				SELECT v.user_id from v_member_user v where v.valid = '1' and v.user_id = #{userId}
+				UNION ALL
+				select * from (SELECT a.chain_uid from agent_info a where a.isuse = '1' and a.approval_status = '1' and a.chain_uid = #{userId} limit 1) s
+				UNION ALL
+				SELECT m.owner_id from t_manage m where m.owner_id = #{userId} and m.`status` = '1' and m.manager_status = '3' and m.manage_level != '13'
+				) AS b
+			GROUP BY
+				b.userId
+		) AS c
+	</select>
+
+	<select id="isMinBrokerRoleByUserId" resultType="int">
+		SELECT
+			count( c.userId )
+		FROM
+			(
+			SELECT
+				b.userId
+			FROM
+				( SELECT user_id AS userId FROM shops WHERE state = 3 AND user_id = #{userId}
+				UNION ALL
+				SELECT chain_uid AS userId FROM chain_user WHERE chain_uid != 68370 AND chain_uid=#{userId}
+				UNION ALL
+				SELECT v.user_id from v_member_user v where v.valid = '1' and v.user_id = #{userId}
+				) AS b
+			GROUP BY
+				b.userId
+		) AS c
+	</select>
+	<insert id="insertFlowMaster" >
+		insert into flow_master(flow_master_id, flow_id, state, create_date, update_date) value(#{flowMasterId}, #{flowId}, #{state}, #{createDate}, #{updateDate})
+	</insert>
+	<insert id="insertFlowMasters">
+		insert into flow_master(flow_master_id, flow_id, state, create_date, update_date) values
+		<foreach collection="list" item="value" index="index"
+				 separator=",">
+			(#{value.flowMasterId}, #{value.flowId}, #{value.state}, #{value.createDate}, #{value.updateDate})
+		</foreach>
+
+	</insert>
+
+	<select id="getFlowMasterFlow" resultType="com.heyou.entity.flowmaster.FlowMasterVO">
+		select b.nickname nickname, f.create_date bindingTime, b.login_name phoneNumber,
+		(select i.image_path from broker_image i where i.broker_user_id = f.flow_id and i.image_type = 1 order by i.create_time desc limit 1) headPortrait
+		from flow_master f
+		left join broker_user b on f.flow_id = b.user_id
+		where f.flow_master_id = #{flowMasterId}
+		and f.create_date &gt; CONCAT(#{bindingTime}, '-01 00:00:00') and f.create_date &lt; CONCAT(#{bindingTime}, '-31 23:59:59')
+	</select>
+
+	<select id="getFlowTime" resultType="java.util.Date">
+		SELECT
+			create_date
+		FROM
+			flow_master
+		WHERE
+			flow_master_id = #{flowMasterId}
+			AND flow_id = #{flowId}
+			AND state =1
+		ORDER BY create_date
+		LIMIT 1
+	</select>
+    <select id="getMemberRecommendsByDate" resultType="java.util.Map">
+		select user_id as userId, superior_id as superiorId from member_recommend where recommend_date &gt;= #{dateBegin} and recommend_date &lt; #{dateEnd}
+	</select>
+	<select id="countMemberRecommend" resultType="java.lang.Integer">
+		select count(*) from member_recommend
+	</select>
+
+</mapper>

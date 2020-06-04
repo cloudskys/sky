@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heyou.dao.housebase.IJielvSourceDataDao">
+
+	<resultMap id="BaseResultMap" type="com.heyou.entity.housebase.vo.JielvSourceData">
+		<result column="id" property="id" jdbcType="INTEGER" />
+		<result column="hotel_id" property="hotelId" jdbcType="INTEGER" />
+		<result column="hotel_info" property="hotelInfo" jdbcType="VARCHAR" />
+		<result column="rate_type" property="rateType" jdbcType="VARCHAR" />
+		<result column="room_type" property="roomType" jdbcType="VARCHAR" />
+		<result column="image_list" property="imageList" jdbcType="VARCHAR" />
+		<result column="room_rate_plan" property="roomRatePlan" jdbcType="VARCHAR" />
+		<result column="booking_rules" property="bookingRules" jdbcType="VARCHAR" />
+		<result column="refund_rules" property="refundRules" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="DATE" />
+		<result column="update_time" property="updateTime" jdbcType="DATE" />
+		<result column="min_price" property="minPrice" jdbcType="DECIMAL" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="state" property="state" jdbcType="INTEGER" />
+
+	</resultMap>
+
+	<select id="jielvSourceDataDao"  resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		select id from jielv_source_data where hotel_id = #{hotelId}
+	</select>
+
+	<select id="getUndisposedSourceDateInfo" resultMap="BaseResultMap">
+		 select
+		 id,hotel_id,hotel_info,rate_type,image_list,room_rate_plan,booking_rules,refund_rules,room_type
+		 ,create_time,update_time,min_price,TYPE,state
+		 from jielv_source_data where state = 0 and room_rate_plan!='0' limit 100
+	</select>
+    <select id="getAllJielvHotelId" resultType="java.lang.Integer">
+		select hotel_no from hotel_info where source = 'jielv'
+	</select>
+
+
+	<delete id="deleteObsoleteNightlyRate">
+		<![CDATA[DELETE from nightly_rate where date < #{delDate} ]]>
+	</delete>
+
+
+
+</mapper>

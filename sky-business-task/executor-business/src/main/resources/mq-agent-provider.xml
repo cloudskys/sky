@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/rabbit
+        http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+
+    <bean id="propertyConfigurer" class="com.heyou.util.PropertyConfigurerEx">
+        <property name="fileEncoding" value="utf-8" />
+        <property name="locations">
+            <list>
+                <value>classpath*:xxl-job-executor.properties</value>
+                <value>classpath*:rabbitmq_config.properties</value>
+                <value>classpath*:jielv_config.properties</value>
+                <value>classpath*:jdbc.properties</value>
+                <value>classpath*:application.properties</value>
+            </list>
+        </property>
+    </bean>
+    <!-- 服务器配置 -->
+    <rabbit:connection-factory id="connectionFactoryAgent"
+                               port="${mq.port}"
+                               virtual-host="${mq.virtual.host.sms}"
+                               password="${mq.password}"
+                               username="${mq.username}"
+                               host="${mq.host}"/>
+
+    <!-- mq的管理 包括队列，交换器 声明等 -->
+    <rabbit:admin connection-factory="connectionFactoryAgent" id="adminAgentInfo"/>
+    <bean class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter" id="jsonMessageConverter"/>
+    <!-- 定义模板 -->
+    <rabbit:template id="rabbitTemplateAgent"
+                     connection-factory="connectionFactoryAgent" message-converter="jsonMessageConverter"/>
+
+    <rabbit:queue name="hefasms.sms.birthday.queue" durable="true" auto-delete="false" declared-by="adminAgentInfo"/>
+
+    <!-- 定义交换器，type = topic -->
+    <rabbit:direct-exchange name="hefasms.birthday.exchange" durable="true" auto-delete="false" declared-by="adminAgentInfo">
+        <!-- 绑定队列 -->
+        <rabbit:bindings>
+            <rabbit:binding key="hefasms.sms.birthday.key" queue="hefasms.sms.birthday.queue" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+</beans>

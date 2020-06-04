@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heyou.dao.airOrder.InsOrderInfoDAO">
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_no AS orderNo, insurance_price AS insurancePrice, order_state AS orderState, create_time AS createTime, create_user AS createUser, update_user AS updateUser, update_time AS updateTime
+    </sql>
+
+    <update id="updateOrderState">
+		UPDATE ins_order_info t SET t.order_state = #{orderState},t.update_time=now()
+		 WHERE t.order_no =  #{orderNo}
+	</update>
+
+</mapper>

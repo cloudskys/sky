@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heyou.dao.houseorder.IOrderInfoDao">
+
+    <resultMap id="BaseResultMap" type="com.heyou.entity.houseorder.po.OrderInfoPO">
+        <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+		<result column="jielv_order_code" property="jieLvOrderCode" jdbcType="VARCHAR" />
+		<result column="order_time" property="createBegin" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="findAllWaitConfirmOrder" resultMap="BaseResultMap">
+		SELECT o.order_no,o.jielv_order_code,o.order_time FROM order_info o WHERE o.order_state=9 and o.jielv_order_code is not null
+	</select>
+</mapper>

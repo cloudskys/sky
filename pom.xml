@@ -121,6 +121,7 @@
 		<module>sky-upms</module>
 		<module>sky-common</module>
 		<module>sky-visual</module>
+		<module>sky-business-task</module>
 	</modules>
 
 	<dependencyManagement>

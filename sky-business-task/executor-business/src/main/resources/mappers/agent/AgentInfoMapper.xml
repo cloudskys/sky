@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heyou.dao.agent.AgentInfoDao">
+    <resultMap id="BaseResultMap" type="com.heyou.entity.agent.AgentInfo">
+        <id column="agent_id" jdbcType="INTEGER" property="agentId" />
+        <result column="chain_uid" jdbcType="INTEGER" property="chainUid" />
+        <result column="agent_phone" jdbcType="VARCHAR" property="agentPhone" />
+        <result column="agent_type" jdbcType="INTEGER" property="agentType" />
+    </resultMap>
+
+    <select id="selectAgentInfosByBirth" resultType="com.heyou.entity.agent.AgentInfo" >
+        select t.agent_id as agentId,t.chain_uid as chainUid, bu.mobilephone as agentPhone, bu.`name` as name,t.agent_type as agentType, bu.identity, bu.gender as sex
+        from agent_info t INNER JOIN broker_user bu on t.chain_uid=bu.user_id
+        where t.isuse=1 and t.approval_status=1 and DATE_FORMAT(NOW(),'%m-%d') = DATE_FORMAT(cast(substring(bu.identity,7,8) as date), '%m-%d')
+        group by t.chain_uid
+    </select>
+
+</mapper>

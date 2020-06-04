@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:rabbit="http://www.springframework.org/schema/rabbit" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+
+	<bean id="propertyConfigurer" class="com.heyou.util.PropertyConfigurerEx">
+		<property name="fileEncoding" value="utf-8" />
+		<property name="locations">
+			<list>
+				<value>classpath*:xxl-job-executor.properties</value>
+				<value>classpath*:rabbitmq_config.properties</value>
+				<value>classpath*:jielv_config.properties</value>
+				<value>classpath*:jdbc.properties</value>
+				<value>classpath*:application.properties</value>
+			</list>
+		</property>
+	</bean>
+
+
+	<!-- ********************************* 数据库配置 ********************************* -->
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"  destroy-method="close">
+		<property name="driverClass" value="${jdbc.default.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.default.url}" />
+		<property name="user" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialPoolSize" value="${jdbc.default.initialSize}" />
+		<property name="minPoolSize" value="${jdbc.default.minIdle}" />
+		<property name="maxPoolSize" value="${jdbc.default.maxActive}" />
+		<property name="maxIdleTime" value="${jdbc.default.maxWait}" />
+		<property name="acquireRetryDelay" value="1000" />
+		<property name="acquireRetryAttempts" value="30" />
+		<property name="preferredTestQuery" value="SELECT 1" />
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath:mappers/**/*.xml"/>
+
+	</bean>
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+		<property name="basePackage" value="com.heyou.dao" />
+	</bean>
+
+	<!-- ********************************* 事务注解配置 ********************************* -->
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.**.dao"/>
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+
+	<!-- ********************************* 执行器基础配置 ********************************* -->
+
+	<!-- 配置01、JobHandler 扫描路径 -->
+	<context:component-scan base-package="com.heyou" />
+
+	<!-- 配置02、执行器 -->
+	<bean id="xxlJobExecutor" class="com.xxl.job.core.executor.XxlJobExecutor" init-method="start" destroy-method="destroy" >
+		<!-- 执行器注册中心地址[选填]，为空则关闭自动注册 -->
+		<property name="adminAddresses" value="${xxl.job.admin.addresses}" />
+		<!-- 执行器AppName[选填]，为空则关闭自动注册 -->
+		<property name="appName" value="${xxl.job.executor.appname}" />
+		<!-- 执行器IP[选填]，为空则自动获取 -->
+		<property name="ip" value="${xxl.job.executor.ip}" />
+		<!-- 执行器端口号[选填]，为空则自动获取 -->
+		<property name="port" value="${xxl.job.executor.port}" />
+		<!-- 访问令牌[选填]，非空则进行匹配校验 -->
+		<!-- 执行器日志路径[选填]，为空则使用默认路径 -->
+		<property name="logPath" value="${xxl.job.executor.logpath}" />
+	</bean>
+
+	<!-- RabbitMQ start -->
+	<!-- 连接配置 -->
+	<rabbit:connection-factory id="rabbitconnectionFactory" port="${mq.port}" virtual-host="${mq.virtual.host}" password="${mq.password}" username="${mq.username}" host="${mq.host}"/>
+	<rabbit:admin connection-factory="rabbitconnectionFactory"/> <!-- 消息队列客户端 -->
+	<bean class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter" id="jsonMessageConverter"/> <!-- #####################rabbit mq end####################################### -->
+	<rabbit:template id="amqpTemplate" connection-factory="rabbitconnectionFactory" message-converter="jsonMessageConverter" /> <!-- 消息对象json转换类 -->
+	<!--声明队列-->
+	<rabbit:queue name="addOrUpdateJielvHotelAllQueue" durable="true"/>
+	<rabbit:queue name="addOrUpdateJielvHotelPriceQueue" durable="true"/>
+	<rabbit:queue name="addOrUpdateJielvHotelRuleQueue" durable="true"/>
+	<rabbit:queue name="addOrUpdateJielvHotelPriceAndRulQueue" durable="true"/>
+	<rabbit:queue name="synchronizationJielvHotelInfoQueue" durable="true"/>
+	<rabbit:queue name="queryJielvOrderQueue" durable="true"/>
+	<rabbit:queue name="updateJielvHotelStaticInfoQueue" durable="true"/>
+	<rabbit:queue name="delJielvHotelQueue" durable="true"/>
+	<rabbit:queue name="delNightlyRateQueue" durable="true"/>
+	<rabbit:queue name="maYiJiGongOrderInfoQueue" durable="true"/>
+
+
+
+	<rabbit:listener-container connection-factory="rabbitconnectionFactory" acknowledge ="auto">
+		<rabbit:listener queues="synchronizationJielvHotelInfoQueue" ref="synchronizationJielvHotelInfoListener" method="onMessage"/>
+	</rabbit:listener-container>
+
+	<rabbit:direct-exchange name="hefa.hotelInit.direct.exchange" xmlns="http://www.springframework.org/schema/rabbit" durable="true" >
+		<rabbit:bindings>
+			<rabbit:binding queue="addOrUpdateJielvHotelAllQueue" key="addOrUpdateJielvHotelAllKey" />
+			<rabbit:binding queue="addOrUpdateJielvHotelPriceQueue" key="addOrUpdateHotelPriceKey" />
+			<rabbit:binding queue="addOrUpdateJielvHotelRuleQueue" key="addOrUpdateJielvHotelRuleKey"/>
+			<rabbit:binding queue="addOrUpdateJielvHotelPriceAndRulQueue" key="addOrUpdateJielvHotelPriceAndRuleKey"/>
+			<rabbit:binding queue="queryJielvOrderQueue" key="queryOrderKey" />
+			<rabbit:binding queue="delNightlyRateQueue" key="delNightlyRateKey" />
+			<rabbit:binding queue="delJielvHotelQueue" key="delJielvHotelKey" />
+			<rabbit:binding queue="updateJielvHotelStaticInfoQueue" key="updateJielvHotelStaticInfoKey" />
+			<rabbit:binding queue="maYiJiGongOrderInfoQueue" key="maYiJiGongOrderInfoKey" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+
+	<import resource="classpath:mq-sms-privider.xml"/>
+	<import resource="classpath:mq-order-privider.xml"/>
+	<import resource="classpath:mq-agent-provider.xml"/>
+</beans>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heyou.dao.airOrder.AirOrderInfoDAO">
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_no AS orderNo, air_ticket_price AS airTicketPrice, third_order_no AS thirdOrderNo, flight_no AS flightNo, dep_code AS depCode, arr_code AS arrCode, dep_time AS depTime, arr_time AS arrTime, cabin, chd_cabin AS chdCabin,cabin_class as cabinClass,create_time AS createTime, update_time AS updateTime, order_state AS orderState, create_user AS createUser, update_user AS updateUser
+    </sql>
+
+    <update id="updateOrderState">
+		UPDATE air_order_info t SET t.order_state = #{orderState},t.update_time =now()
+		 WHERE t.order_no =  #{orderNo}
+	</update>
+
+</mapper>

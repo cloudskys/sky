@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heyou.dao.airOrder.AirOrderHeadInfoDAO">
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_no AS orderNo, order_biz_category AS orderBizCategory, pay_apply_no AS payApplyNo, pay_mode AS payMode, price,
+         order_price AS orderPrice, air_ticket_price AS airTicketPrice, insurance_price AS insurancePrice, user_id AS userId,
+          update_user AS updateUser, order_state AS orderState, payment_time AS paymentTime, update_time AS updateTime,
+           create_time AS createTime
+    </sql>
+
+	<update id="updateOrderState">
+		UPDATE air_order_head_info t SET t.order_state = #{orderState},t.update_time = now()
+		WHERE t.order_no =  #{orderNo}
+	</update>
+
+	<select id="getWaitCancelOrderNo" resultType="com.heyou.entity.airOrder.AirOrderInfoVo">
+        SELECT
+        t.`order_no` orderNo,t.phone,t1.flight_no flightNo
+        ,t1.dep_time depTime , t1.arr_time arrTime, t1.dep_jetquay depJetquay, t1.arr_jetquay arrJetquay,
+        (select a.city from air_city_port_info a where a.state = 0 and a.`code` = t1.dep_code and type = 1) depCity,
+        (select a.`name` from air_city_port_info a where a.state = 0 and a.`code` = t1.dep_code and type = 1) depName,
+        (select a.city  from air_city_port_info a where a.state = 0 and a.`code` = t1.arr_code and type = 1) arrCity,
+        (select a.`name` from air_city_port_info a where a.state = 0 and a.`code` = t1.arr_code and type = 1) arrName,
+        (select a.name from airline_info a where left(t1.flight_no,2 ) = a.`code` ) airlineName
+
+        FROM air_order_head_info t
+        INNER JOIN air_order_info t1 on t.order_no = t1.order_no
+        WHERE TIMESTAMPDIFF(MINUTE,  t.`create_time`, NOW()) > 4 and t.order_state = 0
+    </select>
+
+
+</mapper>

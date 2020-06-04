@@ -1,0 +1,224 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.cloud</groupId>
+		<artifactId>sky</artifactId>
+		<version>3.2</version>
+	</parent>
+    <artifactId>sky-business-task</artifactId>
+
+    <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>A lightweight distributed task scheduling framework.</description>
+    <url>http://www.xuxueli.com/</url>
+
+    <modules>
+        <module>executor-business</module>
+        <module>xxl-job-core</module>
+    </modules>
+
+    <properties>
+        <javax.servlet-api.version>3.0.1</javax.servlet-api.version>
+        <jsp-api.version>2.2</jsp-api.version>
+        <spring.version>4.3.13.RELEASE</spring.version>
+        <jackson.version>2.9.3</jackson.version>
+        <aspectjweaver.version>1.8.13</aspectjweaver.version>
+        <slf4j-api.version>1.7.25</slf4j-api.version>
+        <freemarker.version>2.3.23</freemarker.version>
+        <junit.version>4.12</junit.version>
+        <jackson-mapper-asl.version>1.9.13</jackson-mapper-asl.version>
+        <mapper.version>3.3.6</mapper.version>
+
+        <jetty-server.version>9.2.22.v20170606</jetty-server.version>
+        <hessian.version>4.0.51</hessian.version>
+        <httpclient.version>4.5.4</httpclient.version>
+
+        <commons-exec.version>1.3</commons-exec.version>
+        <commons-collections4.version>4.1</commons-collections4.version>
+        <commons-lang3.version>3.7</commons-lang3.version>
+        <commons-email.version>1.5</commons-email.version>
+
+        <c3p0.version>0.9.5.2</c3p0.version>
+        <mysql-connector-java.version>5.1.45</mysql-connector-java.version>
+        <mybatis-spring.version>1.3.1</mybatis-spring.version>
+        <mybatis.version>3.4.5</mybatis.version>
+
+        <groovy-all.version>2.4.13</groovy-all.version>
+        <quartz.version>2.3.0</quartz.version>
+
+        <spring-boot.version>1.5.9.RELEASE</spring-boot.version>
+        <lombok.version>1.16.22</lombok.version>
+    </properties>
+
+
+    <licenses>
+        <license>
+            <name>GNU General Public License version 3</name>
+            <url>https://opensource.org/licenses/GPL-3.0</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <tag>master</tag>
+        <url>https://github.com/xuxueli/xxl-job.git</url>
+        <connection>scm:git:https://github.com/xuxueli/xxl-job.git</connection>
+        <developerConnection>scm:git:git@github.com:xuxueli/xxl-job.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>XXL</id>
+            <name>xuxueli</name>
+            <email>931591021@qq.com</email>
+            <url>https://github.com/xuxueli</url>
+        </developer>
+    </developers>
+
+
+    <repositories>
+        <repository>
+            <id>heyou-nexus</id>
+            <url>${nexus.url}/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>interval:5</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>heyou-nexus</id>
+            <url>${nexus.url}/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <name>Nexus Release Repository</name>
+            <url>${nexus.url}/nexus/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>${nexus.url}/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <uniqueVersion>false</uniqueVersion>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.8</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <failOnError>true</failOnError>
+                    <verbose>true</verbose>
+                    <fork>true</fork>
+                    <compilerArgument>-nowarn</compilerArgument>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <!-- 先指定 src/main/resources下所有文件及文件夹为资源文件 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <!-- 根据env部署环境值，把对应环境的配置文件拷贝到classes目录 -->
+            <resource>
+                <directory>deployEnv/${env}</directory>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <!-- 全局属性配置 -->
+    <profiles>
+        <!-- 开发环境 -->
+        <profile>
+            <id>dev</id>
+            <properties>
+                <!-- 部署环境(对应配置文件版本) -->
+                <env>dev</env>
+                <maven.test.skip>true</maven.test.skip>
+                <nexus.url>http://nexus-dev.fybanks.cn:8081</nexus.url>
+            </properties>
+            <!-- 设置默认环境 -->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+        <!-- 测试环境 -->
+        <profile>
+            <id>env</id>
+            <properties>
+                <!-- 部署环境(对应配置文件版本) -->
+                <env>env</env>
+                <nexus.url>http://nexus.fybanks.cn:8081</nexus.url>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>uat</id>
+            <properties>
+                <!-- 部署环境(对应配置文件版本) -->
+                <env>uat</env>
+                <nexus.url>http://nexus-uat.fybanks.cn:8081</nexus.url>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
+
+
+        <!-- 生产环境  -->
+        <profile>
+            <id>prod</id>
+            <properties>
+                <!-- 部署环境(对应配置文件版本) -->
+                <env>prod</env>
+                <nexus.url>http://nexus-prod.fybanks.cn:8082</nexus.url>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
+
+    </profiles>
+
+
+</project>

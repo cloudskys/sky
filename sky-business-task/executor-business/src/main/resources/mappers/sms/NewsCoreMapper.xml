@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heyou.dao.sms.NewsCoreDao">
+
+
+    <update id="updateNewsCoreToInvalid">
+        <![CDATA[
+            UPDATE news_core t SET t.is_read = 1 , t.update_date = NOW() , t.update_user = 11111
+            WHERE t.create_date <= #{date} and t.is_read = 0
+        ]]>
+    </update>
+
+</mapper>

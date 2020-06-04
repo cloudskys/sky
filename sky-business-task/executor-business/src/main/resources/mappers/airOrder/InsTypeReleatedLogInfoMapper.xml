@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heyou.dao.airOrder.InsTypeReleatedLogInfoDAO">
+
+	<select id="getAllInsTypeReleatedlogInfos" resultType="com.heyou.entity.airOrder.InsTypeReleatedLogInfo">
+		select id, insurance_id insuranceId, ins_type_releated_id insTypeReleatedId, settlement_price settlementPrice,
+		create_time createTime, update_time updateTime,state, num
+		from ins_type_releated_log_info
+		where state = #{state}
+			and num = #{num}
+		order by ins_type_releated_id desc
+	</select>
+
+</mapper>

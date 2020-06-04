@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.heyou.dao.houseorder.ExceptionRecordDao">
+    <insert id="insertExceptionRecord" parameterType="com.heyou.entity.houseorder.po.ExceptionRecord" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[INSERT INTO Exception_Record(order_no,excep_msg,create_time,call_method,params,level,process_state,excep_sort,req_mode)
+         VALUES(#{orderNo},#{excepMsg},#{createTime},#{callMethod},#{params},#{level},#{processState},#{excepSort},#{reqMode})]]>
+    </insert>
+</mapper>
+
