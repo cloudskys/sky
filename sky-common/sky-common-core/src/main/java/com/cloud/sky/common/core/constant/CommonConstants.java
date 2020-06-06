@@ -76,7 +76,7 @@ public interface CommonConstants {
 	/**
 	 * 后端工程名
 	 */
-	String BACK_END_PROJECT = "pigx";
+	String BACK_END_PROJECT = "sky";
 
 	/**
 	 * 验证码前缀

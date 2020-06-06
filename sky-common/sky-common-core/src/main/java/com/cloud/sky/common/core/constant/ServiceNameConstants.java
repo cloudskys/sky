@@ -28,15 +28,15 @@ public interface ServiceNameConstants {
 	/**
 	 * 认证中心
 	 */
-	String AUTH_SERVICE = "pigx-auth";
+	String AUTH_SERVICE = "sky-auth";
 
 	/**
 	 * UMPS模块
 	 */
-	String UMPS_SERVICE = "pigx-upms-biz";
+	String UMPS_SERVICE = "sky-upms-biz";
 
 	/**
 	 * 分布式事务协调服务
 	 */
-	String TX_MANAGER = "pigx-tx-manager";
+	String TX_MANAGER = "sky-tx-manager";
 }
